@@ -2,38 +2,32 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class HelloTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
-    {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-    }
+    // テスト後にデータベースをリセットする
+    use RefreshDatabase;
 
     // メソッド名は「test〇〇」であること
     public function testHello()
     {
-        // trueかチェック
-        $this->assertTrue(true);
+        // レコードが0件かチェック
+        $this->assertDatabaseCount('users', 0);
 
-        // 空かチェック
-        $arr = [];
-        $this->assertEmpty($arr);
+        // テストユーザーを生成
+        $user = User::factory()->create([
+            'name' => 'John',
+            'email' => 'test@example.com',
+            'email_verified_at' => '2023-04-05 20:39:44',
+            'password' => Hash::make('12345678'),
+        ]);
 
-        // 等しいかチェック
-        $msg = 'Hello';
-        $this->assertEquals('Hello', $msg);
-
-        // 小さいかチェック
-        $n = random_int(0, 100);
-        $this->assertLessThan(100, $n);
+        // レコードが1件かチェック
+        $this->assertDatabaseCount('users', 1);
     }
 }
