@@ -17,6 +17,23 @@ services:
     ports:
       - "3306:3306"
 
+  database-test:
+    image: mysql:5.7
+    container_name: db_experiment_test
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: db_mysql_test
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      TZ: "Asia/Tokyo"
+    volumes:
+      - ./volumes/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./volumes/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - "3307:3306"
+
+
   php-apache:
     container_name: php_apache_experiment
     build:
