@@ -16,18 +16,19 @@ class HelloTest extends TestCase
     // メソッド名は「test〇〇」であること
     public function testHello()
     {
-        // レコードが0件かチェック
-        $this->assertDatabaseCount('users', 0);
+        // 未ログイン状態で'/login'にアクセス
+        $response = $this->get('/login');
+        // ステータスコードが200か？
+        $response->assertStatus(200);
 
+        // ログイン処理
         // テストユーザーを生成
-        $user = User::factory()->create([
-            'name' => 'John',
-            'email' => 'test@example.com',
-            'email_verified_at' => '2023-04-05 20:39:44',
-            'password' => Hash::make('12345678'),
-        ]);
-
-        // レコードが1件かチェック
-        $this->assertDatabaseCount('users', 1);
+        $user = User::factory()->create();
+        // ログイン
+        $this->actingAs($user);
+        // ログインした状態で'/login'にアクセス
+        $response = $this->get('/login');
+        // ステータスコードが302か？
+        $response->assertStatus(302);
     }
 }
